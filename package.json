@@ -1,0 +1,11 @@
+{
+  "name": "ble-prototype",
+  "version": "0.0.1",
+  "dependencies": {
+    "pad": "0.0.4",
+    "shell": "0.3.2",
+    "bleno" : "https://github.com/sandeepmistry/bleno/tarball/master",
+    "coffee-script" : "1.6.3",
+    "serialport" : "1.2.5"
+  }
+}
