@@ -5,7 +5,10 @@
     "pad": "0.0.4",
     "shell": "0.3.2",
     "bleno" : "https://github.com/sandeepmistry/bleno/tarball/master",
+    "noble" : "0.3.3",
+    "dbus": "0.2.9",
     "coffee-script" : "1.6.3",
-    "serialport" : "1.2.5"
+    "serialport" : "1.2.5",
+    "q": "1.0.1"
   }
 }

@@ -1,9 +1,10 @@
-spawn = require('child_process').spawn
+Adapter = require('./adapter').Adapter
 bleno = require('bleno')
 GenericService = require('./generic_service.coffee').GenericService
 
 class GenericPeripheral
   @SERVICES: {}
+  HCI_ID = 0
 
   @service: (name, uuid, characteristics) ->
     @SERVICES[name] =
@@ -15,23 +16,24 @@ class GenericPeripheral
     bleno.on 'advertisingStart', =>
       bleno.setServices  (@services[key] for key in Object.keys(@services))
 
-  stop: =>
+  stop: (callback) =>
     bleno.stopAdvertising()
-    spawn('hciconfig', ['hci0', 'down']).on 'exit', (code) =>
-      console.log "failed to bring hci0 down #{code}" unless 0 == code
+    Adapter.find(HCI_ID).then (adapter) ->
+      adapter.power(false).then ->
+        callback() if callback
 
   start: (callback) =>
     bleno.once 'advertisingStart', callback if callback
-    spawn('hciconfig', ['hci0', 'up']).on 'exit', (code) =>
-      return (callback(code) if callback) unless code == 0
-      if 'poweredOn' == bleno.state
-        @_start_advertising()
-      else
-        bleno.on 'stateChange', (state) =>
-          if 'poweredOn' == state
-            @_start_advertising()
-          else
-            bleno.stopAdvertising()
+    Adapter.find(HCI_ID).then (adapter) =>
+      adapter.power_cycle().then =>
+        if 'poweredOn' == bleno.state
+          @_start_advertising()
+        else
+          bleno.on 'stateChange', (state) =>
+            if 'poweredOn' == state
+              @_start_advertising()
+            else
+              bleno.stopAdvertising()
 
   print: (print_function = console.log, level = 0) =>
     print_function "Peripheral #{@name}"
@@ -43,7 +45,8 @@ class GenericPeripheral
 
   _start_advertising: =>
     bleno.stopAdvertising =>
-      bleno.startAdvertising @name, (@services[key].uuid for key in Object.keys(@services))
+      key = Object.keys(@services)[0]
+      bleno.startAdvertising @name, [@services[key].uuid]
 
   _build_services: ->
     @services = {}

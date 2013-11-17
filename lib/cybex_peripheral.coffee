@@ -1,8 +1,11 @@
 bleno = require('bleno')
 
-GenericPeripheral = require('./lib/generic_peripheral').GenericPeripheral
+GenericPeripheral = require('./generic_peripheral').GenericPeripheral
 
 class CybexPeripheral extends GenericPeripheral
+  heart_rate: (data) ->
+    @set 'heart_rate', 'heart_rate', data
+
   @service 'workout', '1CA931A8-6A77-4E4D-AAD8-5CA168163BA6',
     elapsed_seconds:
       uuid: '1799649B-7C99-48B1-98CF-0B7DCDA597A7'
@@ -30,5 +33,10 @@ class CybexPeripheral extends GenericPeripheral
     model:
       type: 'string'
       uuid: '74371EF2-4C10-4494-BE1A-0503FC844CC9'
+
+  @service 'heart_rate', '180D',
+    heart_rate:
+      type: 'string'
+      uuid: '2A37'
 
 exports.CybexPeripheral = CybexPeripheral
