@@ -22,7 +22,7 @@
 
 1. Enable bluetooth in connman
 
-        vi cat /var/lib/connman/settings
+        vi /var/lib/connman/settings
         Enable=false   # <<< SET TO TRUE
 
         systemctl restart connman.service
@@ -51,7 +51,7 @@
 
 1. Install Node dependencies
 
-        opkg install python-compiler python-misc
+        opkg install python-compiler python-misc python-multiprocessing
         npm update -g npm
         npm install -g 'https://github.com/TooTallNate/node-gyp/tarball/master'
         npm install -g coffee-script
